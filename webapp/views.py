@@ -13,7 +13,7 @@ import sunspec_client
 import datetime
 
 def read_from_db():
-	conn = sqlite3.connect('../sunspec_database/BEAGLEBONE_BLACK_1.db')
+	conn = sqlite3.connect('../sunspec_database/BBBK_'+db_timestamp+'.db')
 	c= conn.cursor()
 	res = c.execute('select name from sqlite_master where type=\'table\'')
 	tables = [table[0].encode('ascii') for table in res]
@@ -42,6 +42,9 @@ def read_from_db():
 
 def index(request):
 	return render(request, 'web_ui/home.html')
+
+def timestamp_start(request):
+	return HttpResponse("Hello")
 
 def sunspecdata(request):
 	db_json = read_from_db()

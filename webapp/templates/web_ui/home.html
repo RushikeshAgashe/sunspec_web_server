@@ -4,7 +4,8 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 <script type="text/javascript" src="ang-table.js"></script>
-
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-sanitize.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ng-csv/0.3.6/ng-csv.min.js"></script>
 <style>
     #header{
         font-weight: bold;
@@ -35,9 +36,11 @@
 <h1 class="text-primary text-center" style="color:darkblue; font-family:inherit" >SunSpec MODBUS Web Interface<br> </h1>
     <div ng-controller="sunspecdataController">
     <div id="DataLogBtns", align="center">
-	<button ng-click="btnDatalogStart()"> Start Data Log </button>
-	<button ng-click="btnDatalogStop()"> Stop  Data Log </button>
-        <button ng-click="btnDatalogDownload()"> Download Data Log </button>
+	<button ng-if="stopFlag == false" ng-click="btnDatalogStart()"> Start Data Log </button>
+	<button ng-if="stopFlag == true"  ng-click="btnDatalogStart()" disabled> Start Data Log </button>
+	<button ng-if="stopFlag == true"  ng-click="btnDatalogStop()"> Stop  Data Log </button>
+	<button ng-if="stopFlag == false" ng-click="btnDatalogStop()" disabled> Stop  Data Log </button>
+        <button ng-csv="raw_db" filename="sunspec_datalog_{{timestamp}}.csv" field-separator="," decimal-separator="." ng-click="btnDatalogDownload()"> Download Data Log </button>
 	&nbsp;Polling Period
 	<select ng-model="pollingPeriod" ng-options="option for option in options"></select>
     </div><br/>

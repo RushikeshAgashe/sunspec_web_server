@@ -1,12 +1,23 @@
 // var app = angular.module('sunspecdata', []);
 
-var app = angular.module('sunspecdata', [], function($httpProvider) {
+var app = angular.module('sunspecdata', ["ngSanitize", "ngCsv"], function($httpProvider) {
   $httpProvider.defaults.xsrfCookieName = 'csrftoken';
   $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
 });
 
 app.controller('sunspecdataController', function($scope, $http, $window, $interval) {
-	
+	time_format = function (d) {
+	    year = d.getFullYear();
+	    month = d.getMonth()+1;
+	    date = d.getDate();
+	    hours = format_two_digits(d.getHours());
+	    minutes = format_two_digits(d.getMinutes());
+	    seconds = format_two_digits(d.getSeconds());
+	    return year+"_"+month+"_"+date+"_"+hours+"_"+minutes+"_"+seconds;
+	};
+	format_two_digits = function (n) {
+    		return n < 10 ? '0' + n : n;
+	};	
 	$scope.checkAll = function () {
 		if ($scope.selectedAll) {
 		    $scope.selectedAll = true;
@@ -21,15 +32,20 @@ app.controller('sunspecdataController', function($scope, $http, $window, $interv
 		$http.get("sunspecdata").then(function(response){
 			$scope.rows = response.data;
 			for (row_idx in $scope.rows){
+				$scope.raw_db.push($scope.rows[row_idx]);
 				if ($scope.rows[row_idx].sf != null){
 					$scope.rows[row_idx].value = $scope.rows[row_idx].value*Math.pow(10,$scope.rows[row_idx].sf);
 					$scope.rows[row_idx].value = ($scope.rows[row_idx].value).toFixed(3);
 				}
 			}
+			
 			console.log(response);
 		});
 	};	
 	$scope.btnDatalogStart = function(){
+		d = new Date();
+		datetext = time_format(d);
+		$scope.timestamp = datetext;
 		$scope.sunspecdatapoll = $interval($scope.getSunspecData, 1000);
 		$http.post('btnDatalogStart/', Date.now()).then(function(response){
 			console.log(response.status)
@@ -44,9 +60,7 @@ app.controller('sunspecdataController', function($scope, $http, $window, $interv
 		$scope.stopFlag = false;
 	};
 	$scope.btnDatalogDownload = function(){
-		$http.post('btnDatalogDownload/', $scope.rows).then(function(response){
-			console.log(response)
-		});
+		console.log($scope.raw_db)
 	};
 	$scope.btnEdit = function(row_idx){
 		$scope.editflags[row_idx]=true;
@@ -86,9 +100,11 @@ app.controller('sunspecdataController', function($scope, $http, $window, $interv
 	for (i=0; i<100;i++){
 		$scope.editflags[i] = false;
 	}
-	$scope.inputs = []
+	$scope.raw_db = [{access:'access',units:'units',timstamp:'timestamp',type:'type',sf:'sf',value:'value',id:'id'}];
+	$scope.csv_header = [];
+	//$scope.raw_db = [];
+	$scope.inputs = [];
 	$scope.stopFlag = false;
 	$scope.selectedAll = false;
 	$scope.options=['10s', '1s', '100ms', '10ms']
-
 });
