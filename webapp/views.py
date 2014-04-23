@@ -13,7 +13,7 @@ import sunspec_client
 import datetime
 
 def read_from_db(filter = None):
-	conn = sqlite3.connect('../sunspec_database/BBBK_'+db_timestamp+'.db')
+	conn = sqlite3.connect(db_path+device_name+db_timestamp+'.db')
 	c= conn.cursor()
 	res = c.execute('select name from sqlite_master where type=\'table\'')
 	tables = [table[0].encode('ascii') for table in res]
@@ -63,6 +63,7 @@ def btn_datalog_start(request):
 	global db_timestamp
 	db_timestamp =  datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
 	print "Running Sunpec Client"
+	print db_timestamp
 	sunspec_client.run(timestamp=db_timestamp,port='/dev/ttyO1')
 	return HttpResponse("Sunspec Client Started.")
 
@@ -95,3 +96,8 @@ def load_chart(request,datapoints):
 	print datapoints
 	return render(request,'web_ui/chart.html')
 
+try:
+	device_name = os.environ["DEVICE_NAME"]+'_'
+except KeyError:
+	device_name = 'BBBK_unknown_'
+db_path = '../sunspec_database/'
