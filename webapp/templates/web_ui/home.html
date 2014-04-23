@@ -72,7 +72,7 @@
             <tr ng-repeat="row in rows track by $index" ng-class-odd="'odd'" ng-class-even="'even'">
                 <td>
 		    <input ng-if="row.type=='string'" type="checkbox" disabled/>
-                    <input ng-if="row.type!='string'" type="checkbox" ng-checked="selectedAll" ng-model="row.boxselect"/>
+                    <input ng-if="row.type!='string'" type="checkbox" ng-checked="selectedAll" ng-model="boxselect[$index]"/>
                 </td>
                 <td>
                    <b> {{row.id}} </b>

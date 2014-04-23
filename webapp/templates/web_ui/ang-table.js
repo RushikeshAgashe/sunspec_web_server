@@ -25,7 +25,7 @@ app.controller('sunspecdataController', function($scope, $http, $window, $interv
 		    $scope.selectedAll = false;
 		}
 		for (row_idx in $scope.rows){
-			$scope.rows[row_idx].boxselect = $scope.selectedAll;
+			$scope.boxselect[row_idx] = $scope.selectedAll;
 		}
    	};
 	$scope.getSunspecData = function(){	
@@ -84,7 +84,7 @@ app.controller('sunspecdataController', function($scope, $http, $window, $interv
 	};
 	$scope.btnGraphMultiple = function(){
 		for (row_idx in $scope.rows){
-				$scope.rows[row_idx].boxselect = false;
+				$scope.boxselect[row_idx] = false;
 		$scope.selectedAll = false;
 		}
 		$http.post('btnGraphMultiple/', $scope.rows).then(function(response){
@@ -95,10 +95,12 @@ app.controller('sunspecdataController', function($scope, $http, $window, $interv
 
 	$scope.sunspecdatapoll = 0;
 	$scope.editflags = [];
+	$scope.boxselect = [];
 	//FIX THIS: The editflags array is defined to be of arbitrarily large size and initialized to false.
 	//Ideally size of this array needs to be only as big as the number of rows in the table.
 	for (i=0; i<100;i++){
 		$scope.editflags[i] = false;
+		$scope.boxselect[i] = false;
 	}
 	$scope.raw_db = [{access:'access',units:'units',timstamp:'timestamp',type:'type',sf:'sf',value:'value',id:'id'}];
 	$scope.csv_header = [];
