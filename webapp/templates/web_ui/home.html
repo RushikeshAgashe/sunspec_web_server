@@ -55,6 +55,7 @@
 	<col width="4%"></col>
 	<tr id="header">
                 <td>
+                    <input type="checkbox" ng-model="selectedAll" ng-click="checkAll()"/>
 		</td>
                 <td>Point ID</td>
                 <td>Point Value</td>
@@ -62,13 +63,12 @@
 		<td>Datatype</td>
 		<td>R/W</td>
             </tr>
-	    <tr>
+	    <!--<tr>
 		<td>
-                    <input type="checkbox" ng-model="selectedAll" ng-click="checkAll()"/>
 		</td>
 		<td colspan="5" align="left"><b>&nbsp;Common Model Data </b>
 		</td>
-	    </tr>
+	    </tr>-->
             <tr ng-repeat="row in rows track by $index" ng-class-odd="'odd'" ng-class-even="'even'">
                 <td>
 		    <input ng-if="row.type=='string'" type="checkbox" disabled/>

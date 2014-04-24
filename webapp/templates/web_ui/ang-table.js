@@ -5,7 +5,7 @@ var app = angular.module('sunspecdata', ["ngSanitize", "ngCsv"], function($httpP
   $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
 });
 
-app.controller('sunspecdataController', function($scope, $http, $window, $interval) {
+app.controller('sunspecdataController', function($scope, $http, $window, $interval, $timeout) {
 	time_format = function (d) {
 	    year = d.getFullYear();
 	    month = d.getMonth()+1;
@@ -46,7 +46,10 @@ app.controller('sunspecdataController', function($scope, $http, $window, $interv
 		d = new Date();
 		datetext = time_format(d);
 		$scope.timestamp = datetext;
-		$scope.sunspecdatapoll = $interval($scope.getSunspecData, 1000);
+		callAtInterval = function(){
+			$scope.sunspecdatapoll = $interval($scope.getSunspecData, 1000);
+		}
+		$timeout(callAtInterval, 1000);
 		$http.post('btnDatalogStart/', Date.now()).then(function(response){
 			console.log(response.status)
 		});
@@ -72,13 +75,21 @@ app.controller('sunspecdataController', function($scope, $http, $window, $interv
 	$scope.btnSubmit = function(row_idx){
 		$scope.editflags[row_idx]=false;
 		if ($scope.inputs[row_idx] == null || $scope.inputs[row_idx] == ''){
-			alert(" ######## SUBMIT ERROR ######## \n       Please input some data first\n ############################\# ");
+			alert("######## SUBMIT ERROR ######## \n"+
+			      "Please input some data first\n"  +
+			      "############################## ");
 			return;
-		}else{
-			alert("Submit Success");
 		}
-		$http.post('btnSubmit/', $scope.inputs[row_idx]).then(function(response){
+		submitObject = [{id : $scope.rows[row_idx].id, value:$scope.inputs[row_idx]}];
+		$http.post('btnSubmit/',submitObject).then(function(response){
 			console.log(response)
+			if (response.data == 0){
+				alert("Submit Success!!")
+			}else{
+				alert("######## ValueError ######## \n"+
+				      "Input Value must be in allowable range of datatype\n"+
+				      "############################ ");
+			}
 		});
 		$scope.inputs[row_idx] = '';
 	};
@@ -102,7 +113,7 @@ app.controller('sunspecdataController', function($scope, $http, $window, $interv
 		$scope.editflags[i] = false;
 		$scope.boxselect[i] = false;
 	}
-	$scope.raw_db = [{access:'access',units:'units',timstamp:'timestamp',type:'type',sf:'sf',value:'value',id:'id'}];
+	$scope.raw_db = [{timstamp:'timestamp',id:'id',value:'value',sf:'sf',units:'units',type:'type',access:'access'}];
 	$scope.csv_header = [];
 	//$scope.raw_db = [];
 	$scope.inputs = [];

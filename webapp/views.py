@@ -33,8 +33,8 @@ def read_from_db():
 			db_dict['units']= data[-1][4]
 			db_dict['type'] = data[-1][5]
 			db_dict['access'] = data[-1][6]
-			if db_dict['type'] not in ['sunssf', 'pad']:
-				db_json.append(dict(db_dict))
+			if db_dict['type'] not in ['sunssf', u'pad']:
+				db_json.append(json.dumps(db_dict))
 	c.close()
 	conn.close()
 	return db_json
@@ -47,8 +47,8 @@ def timestamp_start(request):
 	return HttpResponse("Hello")
 
 def sunspecdata(request):
-	db_json = read_from_db()
-	return HttpResponse(json.dumps(db_json), content_type="application/json")
+	db_json = "[" + (",").join(read_from_db()) + "]"
+	return HttpResponse(db_json, content_type="application/json")
 
 def ang_table(request):
 	return render(request, 'web_ui/ang-table.js')
@@ -69,7 +69,12 @@ def btn_datalog_download(request):
 
 def btn_submit(request):
 	print request.body
-	return HttpResponse(str(request.body))
+	try:
+		sunspec_client.add_to_write_queue(json.loads(request.body))
+		response = 0
+	except ValueError:
+		response = -1
+	return HttpResponse(response)
 
 def btn_graph_multiple(request):
 	return HttpResponse("Hello")
