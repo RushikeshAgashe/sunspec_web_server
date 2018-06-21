@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<script type="text/javascript" src="ang-table.js"></script>
+
+<style>
+    #header{
+        font-weight: bold;
+        font-size: 120%;
+        color:darkblue;
+  }
+    tr{
+        font-family: Sans-serif, Monospace;
+        text-align:justify;
+        border-spacing: 10px;
+              border: none;
+        text-align: center;
+  }
+    body{
+        background-color:beige;
+    }
+ 
+        input[type=text] {
+    background-color: lightgray;
+}
+   .odd { background-color: #f1f7dc; }
+   .even { background-color: #FFF; }
+</style>
+
+</head>
+<body ng-app="sunspecdata"><br/>
+{% verbatim %}
+<h1 class="text-primary text-center" style="color:darkblue; font-family:inherit" >SunSpec MODBUS Web Interface<br> </h1>
+    <div ng-controller="sunspecdataController">
+    <div id="DataLogBtns", align="center">
+	<button ng-click="btnDatalogStart()"> Start Data Log </button>
+	<button ng-click="btnDatalogStop()"> Stop  Data Log </button>
+        <button ng-click="btnDatalogDownload()"> Download Data Log </button>
+	&nbsp;Polling Period
+	<select ng-model="pollingPeriod" ng-options="option for option in options"></select>
+    </div><br/>
+    <!-- <div id = 'modbusdata' ></div> -->
+        <table style="background-color:floralwhite" align="center" width="60%" padding="10px"  border="2">
+        <col width="2%"></col>
+	<col width="5%"></col>
+	<col width="15%"></col>
+	<col width="4%"></col>
+	<col width="4%"></col>
+	<col width="4%"></col>
+	<col width="4%"></col>
+	<tr id="header">
+                <td>
+		</td>
+                <td>Point ID</td>
+                <td>Point Value</td>
+                <td>Units</td>
+		<td>Datatype</td>
+		<td>R/W</td>
+            </tr>
+	    <tr>
+		<td>
+                    <input type="checkbox" ng-model="selectedAll" ng-click="checkAll()"/>
+		</td>
+		<td colspan="5" align="left"><b>&nbsp;Common Model Data </b>
+		</td>
+	    </tr>
+            <tr ng-repeat="row in rows track by $index" ng-class-odd="'odd'" ng-class-even="'even'">
+                <td>
+		    <input ng-if="row.type=='string'" type="checkbox" disabled/>
+                    <input ng-if="row.type!='string'" type="checkbox" ng-checked="selectedAll" ng-model="row.boxselect"/>
+                </td>
+                <td>
+                   <b> {{row.id}} </b>
+                </td>
+                <td ng-if="editflags[$index]==true">
+		    <input ng-model="inputs[$index]" focus="true"></input>
+		    <button id="btnClear"   ng-click="btnClear($index)">&#x2717;</button>
+		    <button id="btnSubmit"  ng-click="btnSubmit($index)">&#x2713;</button>
+		</td>
+		<td ng-if="editflags[$index]==false">
+                	<font size = "3">{{row.value}}</font>
+                </td>
+                <td>
+			<div ng-if="row.units == null"> -- </div>
+			<div ng-if="row.units != null">{{row.units}}</div>
+                </td>
+		<td>
+			<div ng-if="row.sf != null"> {{row.type}}, sf= {{row.sf}} </div>
+			<div ng-if="row.sf == null"> {{row.type}} </div>
+		</td>
+		<td ng-if="row.access=='r'" ><font size="1"> READONLY </font></td>
+                <div style="width:100%;"><td ng-if="row.access=='rw'"><button id="btnEdit" style="width:100%;" ng-click="btnEdit($index)"><font size="1"> EDIT </font></button></td></div>
+            </tr>
+            <tr>
+                <td colspan="2"><button align="left" style="width:100%" id="btnGraphMultiple" ng-click="btnGraphMultiple()">Generate Graph 📈</button></td>
+                <td colspan="4"/>
+            </tr>
+        </table>
+    </div>
+    <div id = 'template'></div>  <br><br>
+    <div id = 'chart'></div>
+{% endverbatim %}
+</body>
+</html>
