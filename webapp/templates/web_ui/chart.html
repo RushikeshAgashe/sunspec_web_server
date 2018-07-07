@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html ng-app="chartApp">
+<head>
+    <title>AngularJS Charts with CanvasJS</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>  
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-charts/0.2.7/angular-charts.min.js"></script>
+    <script src="../../ang-chart.js"></script>
+    <style>
+        .container {
+            margin-top: 40px;
+            width: 970px !important;
+        }
+        #chartContainer {
+            margin-top: 30px;
+            height: 500px; 
+            width: 100%;
+        }
+	body{
+        	background-color:beige;
+    	}
+
+    </style>
+</head>
+<body>
+    <div class="container" ng-controller="chartController">
+        <div class="row">
+            <div class="col-xs-12">
+                <div id="chartContainer"></div>
+            </div>
+        </div>
+
+	<canvas class="chart chart-line" chart-data="data" chart-labels="labels" 
+	chart-series="series" chart-click="onClick"></canvas> 
+    </div>
+</body>
+</html>

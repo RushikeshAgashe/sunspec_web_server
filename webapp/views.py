@@ -8,11 +8,11 @@ import json
 from collections import OrderedDict
 import subprocess
 import sys
-sys.path.insert(0,'/home/debian/Github/apps/pysunspec-clone')
+sys.path.insert(0,'/home/debian/Github/pysunspec-clone')
 import sunspec_client
 import datetime
 
-def read_from_db():
+def read_from_db(filter = None):
 	conn = sqlite3.connect('../sunspec_database/BBBK_'+db_timestamp+'.db')
 	c= conn.cursor()
 	res = c.execute('select name from sqlite_master where type=\'table\'')
@@ -22,7 +22,10 @@ def read_from_db():
 	for table in tables:
 		res = c.execute("SELECT DISTINCT id FROM " + table)
 		data = c.fetchall()
-		points = [point[0].encode('ascii') for point in data]
+		if filter:
+			points = [point[0].encode('ascii') for point in data if point[0] in filter]
+		else:
+			points = [point[0].encode('ascii') for point in data]
 		for id in points:
 			res = c.execute("SELECT * FROM "+ table +" WHERE id='"+id+"'")
 			data = c.fetchall()
@@ -53,6 +56,9 @@ def sunspecdata(request):
 def ang_table(request):
 	return render(request, 'web_ui/ang-table.js')
 
+def ang_chart(request):
+	return render(request, 'web_ui/ang-chart.js')
+
 def btn_datalog_start(request):
 	global db_timestamp
 	db_timestamp =  datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
@@ -79,4 +85,13 @@ def btn_submit(request):
 def btn_graph_multiple(request):
 	return HttpResponse("Hello")
 	
+def get_chart_data(request,datapoints):
+	datapoints = datapoints[:-1].split("-")
+	db_json = "[" + (",").join(read_from_db(filter=datapoints)) + "]"
+	return HttpResponse(db_json, content_type="application/json")
+
+def load_chart(request,datapoints):
+	datapoints = datapoints[:-1].split("-")
+	print datapoints
+	return render(request,'web_ui/chart.html')
 

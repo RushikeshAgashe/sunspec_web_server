@@ -94,14 +94,18 @@ app.controller('sunspecdataController', function($scope, $http, $window, $interv
 		$scope.inputs[row_idx] = '';
 	};
 	$scope.btnGraphMultiple = function(){
+		chart_vars = ''
 		for (row_idx in $scope.rows){
+			if ($scope.boxselect[row_idx] == true && $scope.rows[row_idx].type != 'string'){
+				chart_vars = chart_vars + $scope.rows[row_idx].id + '-'
+			}
 				$scope.boxselect[row_idx] = false;
 		$scope.selectedAll = false;
 		}
-		$http.post('btnGraphMultiple/', $scope.rows).then(function(response){
-			console.log(response)
-		});
-		$window.open('__blank');
+		//$http.get('renderGraph').then(function(response){
+		//	console.log(response)
+		//});
+		$window.open('chart.html/'+chart_vars);
 	};
 
 	$scope.sunspecdatapoll = 0;
@@ -121,3 +125,6 @@ app.controller('sunspecdataController', function($scope, $http, $window, $interv
 	$scope.selectedAll = false;
 	$scope.options=['10s', '1s', '100ms', '10ms']
 });
+
+
+
