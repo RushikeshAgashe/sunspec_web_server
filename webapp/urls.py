@@ -7,6 +7,7 @@ urlpatterns = [
 	url(r'^ang-table.js/$'		,views.ang_table		,name='ang_table'),
 	url(r'^ang-chart.js/$'		,views.ang_chart		,name='ang_chart'),
 	url(r'^timestampStart/$'	,views.timestamp_start		,name='timestamp_start'),
+	url(r'^getServerName/$'		,views.get_server_name		,name='get_server_name'),
 	url(r'^btnDatalogStart/$'	,views.btn_datalog_start	,name='start_datalog'),
 	url(r'^btnDatalogStop/$'	,views.btn_datalog_stop		,name='stop_datalog'),
 	url(r'^btnDatalogDownload/$'	,views.btn_datalog_download	,name='download_datalog'),

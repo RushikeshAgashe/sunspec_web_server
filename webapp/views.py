@@ -50,8 +50,11 @@ def timestamp_start(request):
 	return HttpResponse("Hello")
 
 def sunspecdata(request):
-	db_json = "[" + (",").join(read_from_db()) + "]"
-	return HttpResponse(db_json, content_type="application/json")
+	try:
+		db_json = "[" + (",").join(read_from_db()) + "]"
+		return HttpResponse(db_json, content_type="application/json")
+	except NameError:
+		return HttpResponse(status=503)
 
 def ang_table(request):
 	return render(request, 'web_ui/ang-table.js')
@@ -59,13 +62,26 @@ def ang_table(request):
 def ang_chart(request):
 	return render(request, 'web_ui/ang-chart.js')
 
+def get_server_name(request):
+	global device_name
+	try:
+		device_name = os.environ["DEVICE_NAME"]+'_'
+	except KeyError:
+		pass
+	return HttpResponse(device_name)
+	
 def btn_datalog_start(request):
 	global db_timestamp
 	db_timestamp =  datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
 	print "Running Sunpec Client"
 	print db_timestamp
-	sunspec_client.run(timestamp=db_timestamp,port='/dev/ttyO1')
-	return HttpResponse("Sunspec Client Started.")
+	try:
+		sunspec_client.run(timestamp=db_timestamp,port='/dev/ttyO1')
+		return HttpResponse("Sunspec Client Stopped.")
+	except IOError as e:
+		print e
+		btn_datalog_stop(request)
+		return HttpResponse("Sunspec Client Failed - Error Reading from device.\nNo device present or communication not configured correctly.")
 
 def btn_datalog_stop(request):
 	sunspec_client.stop()
@@ -96,8 +112,5 @@ def load_chart(request,datapoints):
 	print datapoints
 	return render(request,'web_ui/chart.html')
 
-try:
-	device_name = os.environ["DEVICE_NAME"]+'_'
-except KeyError:
-	device_name = 'BBBK_unknown_'
+device_name = 'BBBK_unknown_'
 db_path = '../sunspec_database/'

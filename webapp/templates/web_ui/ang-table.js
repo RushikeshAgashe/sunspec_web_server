@@ -40,6 +40,18 @@ app.controller('sunspecdataController', function($scope, $http, $window, $interv
 			}
 			
 			console.log(response);
+		},function(response){
+			console.log(response)
+			if (response.status == -1){
+				$interval.cancel($scope.sunspecdatapoll)
+				alert("SunSpec web server is no longer available. Please restart server.")
+			}
+			if (response.status == 500){
+				alert("Internal Server Error. Please fix isssue in server.")
+			}
+			if (response.status == 503){
+				$interval.cancel($scope.sunspecdatapoll)
+			}
 		});
 	};	
 	$scope.btnDatalogStart = function(){
@@ -47,11 +59,15 @@ app.controller('sunspecdataController', function($scope, $http, $window, $interv
 		datetext = time_format(d);
 		$scope.timestamp = datetext;
 		callAtInterval = function(){
-			$scope.sunspecdatapoll = $interval($scope.getSunspecData, 1000);
+			$scope.sunspecdatapoll = $interval($scope.getSunspecData, $scope.period);
 		}
 		$timeout(callAtInterval, 1000);
+		$http.get('getServerName/').then(function(response){
+			$scope.server_name = response.data
+		})
 		$http.post('btnDatalogStart/', Date.now()).then(function(response){
-			console.log(response.status)
+			alert(response.data)
+			$scope.btnDatalogStop()
 		});
 		$scope.stopFlag = true;
 	};
@@ -111,6 +127,7 @@ app.controller('sunspecdataController', function($scope, $http, $window, $interv
 	$scope.sunspecdatapoll = 0;
 	$scope.editflags = [];
 	$scope.boxselect = [];
+	$scope.server_name = '--'
 	//FIX THIS: The editflags array is defined to be of arbitrarily large size and initialized to false.
 	//Ideally size of this array needs to be only as big as the number of rows in the table.
 	for (i=0; i<100;i++){
@@ -123,7 +140,9 @@ app.controller('sunspecdataController', function($scope, $http, $window, $interv
 	$scope.inputs = [];
 	$scope.stopFlag = false;
 	$scope.selectedAll = false;
-	$scope.options=['10s', '1s', '100ms', '10ms']
+//	$scope.options = [{id:1, value:10000},{id:2, value:1000}];
+	$scope.options= [10000,1000,500]
+	$scope.period= $scope.options[1];
 });
 
 
