@@ -9,7 +9,7 @@ from collections import OrderedDict
 import subprocess
 import sys
 sys.path.insert(0,'/home/debian/SunSpec-MODBUS-Communication-Suite/pysunspec-clone')
-import sunspec_client
+import sunspec_client_tcp as sunspec_client
 import datetime
 
 def read_from_db(filter = None):
@@ -76,7 +76,8 @@ def btn_datalog_start(request):
 	print "Running Sunpec Client"
 	print db_timestamp
 	try:
-		sunspec_client.run(timestamp=db_timestamp,port='/dev/ttyO1')
+		#sunspec_client.run(timestamp=db_timestamp,port='/dev/ttyO1')
+		sunspec_client.run(timestamp=db_timestamp,server_port=8899, server_address='10.76.56.2')
 		return HttpResponse("Sunspec Client Stopped.")
 	except IOError as e:
 		print e

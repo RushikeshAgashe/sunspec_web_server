@@ -32,7 +32,7 @@ app.controller('sunspecdataController', function($scope, $http, $window, $interv
 		$http.get("sunspecdata").then(function(response){
 			$scope.rows = response.data;
 			for (row_idx in $scope.rows){
-				$scope.raw_db.push($scope.rows[row_idx]);
+				//$scope.raw_db.push($scope.rows[row_idx]);
 				if ($scope.rows[row_idx].sf != null){
 					$scope.rows[row_idx].value = $scope.rows[row_idx].value*Math.pow(10,$scope.rows[row_idx].sf);
 					$scope.rows[row_idx].value = ($scope.rows[row_idx].value).toFixed(3);
@@ -40,7 +40,8 @@ app.controller('sunspecdataController', function($scope, $http, $window, $interv
 			}
 			
 			console.log(response);
-		},function(response){
+		}
+		/*,function(response){
 			console.log(response)
 			if (response.status == -1){
 				$interval.cancel($scope.sunspecdatapoll)
@@ -52,7 +53,7 @@ app.controller('sunspecdataController', function($scope, $http, $window, $interv
 			if (response.status == 503){
 				$interval.cancel($scope.sunspecdatapoll)
 			}
-		});
+		}*/);
 	};	
 	$scope.btnDatalogStart = function(){
 		d = new Date();
