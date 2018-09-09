@@ -22,7 +22,7 @@ DATABASES = {
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.4/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ['192.168.7.2','10.76.56.41', '10.76.56.42','10.76.56.43','10.76.56.164']
+ALLOWED_HOSTS = ['192.168.7.2','10.76.56.41', '10.76.56.42','10.76.56.43','10.76.56.164','10.76.56.177','10.76.56.171']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name

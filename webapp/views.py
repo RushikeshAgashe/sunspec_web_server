@@ -8,7 +8,7 @@ import json
 from collections import OrderedDict
 import subprocess
 import sys
-sys.path.insert(0,'/home/debian/SunSpec-MODBUS-Communication-Suite/pysunspec-clone')
+sys.path.insert(0,'/home/debian/SunSpec-MODBUS-Communication-Suite/data_logging_app')
 import sunspec_client_tcp as sunspec_client
 import datetime
 
